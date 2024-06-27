@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using TicTacCows;
+using System.Threading.Tasks;
 using TicTacCows.Logging;
 using TicTacCows.TicTacToeEngine;
 using TicTacCows.Tools.SpawnSystem;
@@ -12,6 +10,10 @@ namespace TicTacCows
     {
         public SpawnSystem spawnSys;
         public TicTacToeController ticTacControl;
+
+        [Header("Cinematics")]
+        public Animation cinematicAnimation;
+        public AnimationClip introCinematic;
 
         public static MainGameController singleton;
 
@@ -26,13 +28,30 @@ namespace TicTacCows
 
             spawnSys.SetupForRuntime();
             ticTacControl.SetupForRuntime();
-            ticTacControl.StartNewGame();
+
+            // Show intro once when the game starts.
+            PerformIntro();
         }
 
         public void ChangeGameState(GameValues.GameStates inGameState)
         {
             currentGameState = inGameState;
             LoggingSystem.AddLog(GameValues.LoggingTypes.Log, "--- MainGameController:ChangeGameState - Changing game state to " + inGameState);
+        }
+
+        private async void PerformIntro()
+        {
+            ChangeGameState(GameValues.GameStates.Cinematic);
+
+            cinematicAnimation.clip = introCinematic;
+            cinematicAnimation.Play();
+
+            while(cinematicAnimation.isPlaying)
+            {
+                await Task.Delay(100);
+            }
+
+            ticTacControl.StartNewGame();
         }
     }
 }

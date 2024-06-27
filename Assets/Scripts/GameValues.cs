@@ -30,6 +30,7 @@ namespace TicTacCows
             NONE = 0,
             PlayerChoosingSpace = 1,
             ResolvingPiecePlacement = 2,
+            Cinematic = 3,
         }
 
         public enum SpaceStates
