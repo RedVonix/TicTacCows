@@ -96,4 +96,17 @@ public class TicTacLogicResolver
         // No winner and no tie yet - the battle rages on!
         return (GameValues.RuleResolverResults.NoResults, GameValues.TicTacPlayers.NONE);
     }
+
+    public void HaveAIMakeMove(TicTacToeController inController)
+    {
+        // The AI moving for this TicTacToe is really simple - we just choose a random space.
+        // If we wanted to make the AI more advanced we could implement a MiniMax algorithm.
+
+        // Get a list of all available spaces.
+        List<TicTacToeSpace> availableSpaces = inController.gameBoard.boardSpaces.FindAll(s => s.RUNTIME_SpaceOwner == GameValues.TicTacPlayers.NONE);
+
+        // Randomly choose one and move to it.
+        TicTacToeSpace roboChosenSpace = availableSpaces[UnityEngine.Random.Range(0, availableSpaces.Count)];
+        inController.PlacePieceOnSpace(roboChosenSpace);
+    }
 }

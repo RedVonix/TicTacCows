@@ -11,7 +11,9 @@ namespace TicTacCows.TicTacToeEngine
         [Header("Prefab References")]
         public GameObject xGamePiece;
         public GameObject oGamePiece;
-        
+
+        [HideInInspector] public int RUNTIME_PlayerCount;
+
         private GameValues.TicTacPlayers RUNTIME_CurrentPlayer;
         private TicTacLogicResolver RUNTIME_logicResolver = new TicTacLogicResolver();
 
@@ -31,11 +33,27 @@ namespace TicTacCows.TicTacToeEngine
             if (RUNTIME_CurrentPlayer == GameValues.TicTacPlayers.Player0)
             {
                 RUNTIME_CurrentPlayer = GameValues.TicTacPlayers.Player1;
+                MainGameController.singleton.PlayerTwoTurnStart();
             }
             else
             {
                 RUNTIME_CurrentPlayer = GameValues.TicTacPlayers.Player0;
-            }        
+                MainGameController.singleton.PlayerOneTurnStart();
+            }
+        }
+
+        public void BeginNextMove()
+        {
+            // If this is a 1 player game and current is Player 2, then it's AI choosing. Othewise it's still a player.
+            if (RUNTIME_PlayerCount == 1 && RUNTIME_CurrentPlayer == GameValues.TicTacPlayers.Player1)
+            {
+                MainGameController.singleton.ChangeGameState(GameValues.GameStates.AIChoosingSpace);
+                RUNTIME_logicResolver.HaveAIMakeMove(this);
+            }
+            else
+            {
+                MainGameController.singleton.ChangeGameState(GameValues.GameStates.PlayerChoosingSpace);
+            }
         }
 
         public void SpaceInteracted(TicTacToeSpace inSpace)
@@ -46,11 +64,10 @@ namespace TicTacCows.TicTacToeEngine
                 return;
             }
 
-            PlacePieceOnSpace(inSpace);
-            ResolvePiecePlacement(inSpace);
+            PlacePieceOnSpace(inSpace);           
         }
 
-        private void PlacePieceOnSpace(TicTacToeSpace inSpace)
+        public void PlacePieceOnSpace(TicTacToeSpace inSpace)
         {
             GameObject piecePrefab = GetPiecePrefabForCurrentPlayer();
             if(piecePrefab == null)
@@ -62,6 +79,8 @@ namespace TicTacCows.TicTacToeEngine
             LoggingSystem.AddLog(GameValues.LoggingTypes.Log, $"--- TicTacToeController:PlacePieceOnSpace - {RUNTIME_CurrentPlayer} placed piece on space {inSpace.spaceX}/{inSpace.spaceY}");
             GameObject spawnedPiece = SpawnSystem.singleton.SpawnFromPrefab(piecePrefab, inSpace.transform);
             inSpace.PiecePlacedOnSpace(RUNTIME_CurrentPlayer, spawnedPiece);
+
+            ResolvePiecePlacement(inSpace);
         }
 
         private GameObject GetPiecePrefabForCurrentPlayer()
@@ -82,7 +101,6 @@ namespace TicTacCows.TicTacToeEngine
 
             // Let's see if anybody won...
             (GameValues.RuleResolverResults logicResult, GameValues.TicTacPlayers targetPlayer) = RUNTIME_logicResolver.GetResults(gameBoard);
-            Debug.Log("RULE RESULT: " + logicResult + " / " + targetPlayer);
             switch (logicResult)
             {
                 case GameValues.RuleResolverResults.NoResults:
@@ -107,7 +125,6 @@ namespace TicTacCows.TicTacToeEngine
 
         private void BeginNewGameRound()
         {
-            MainGameController.singleton.ChangeGameState(GameValues.GameStates.PlayerChoosingSpace);
             SwapActivePlayer();
         }
 

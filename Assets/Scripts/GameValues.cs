@@ -8,7 +8,8 @@ namespace TicTacCows
         public enum DialogTypes
         {
             NONE = 0,
-
+            TitleScreen = 1,
+            ResultsScreen = 2,
         }
 
         public enum TicTacToePieceTypes
@@ -31,6 +32,8 @@ namespace TicTacCows
             PlayerChoosingSpace = 1,
             ResolvingPiecePlacement = 2,
             Cinematic = 3,
+            TitleScreen = 4,
+            AIChoosingSpace = 5,
         }
 
         public enum SpaceStates
