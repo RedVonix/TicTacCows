@@ -80,6 +80,8 @@ namespace TicTacCows.TicTacToeEngine
             GameObject spawnedPiece = SpawnSystem.singleton.SpawnFromPrefab(piecePrefab, inSpace.transform);
             inSpace.PiecePlacedOnSpace(RUNTIME_CurrentPlayer, spawnedPiece.GetComponent<TicTacToePiece>());
 
+            MainGameController.singleton.piecePlacedAudio.Play();
+
             ResolvePiecePlacement(inSpace);
         }
 

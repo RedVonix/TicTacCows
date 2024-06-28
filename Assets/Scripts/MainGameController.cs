@@ -22,6 +22,10 @@ namespace TicTacCows
         public AnimationClip Player1Turn;
         public AnimationClip Player2Turn;
 
+        [Header("Audio References")]
+        public AudioSource tractorBeamAudio;
+        public AudioSource piecePlacedAudio;
+
 
         public static MainGameController singleton;
 
@@ -163,6 +167,8 @@ namespace TicTacCows
                 s.cowObj.SetActive(false);
                 s.RUNTIME_PieceOnSpace.PlayBeam();
             });
+
+            tractorBeamAudio.Play();
 
             await Task.Delay(2000);
 
