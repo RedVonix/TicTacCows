@@ -10,10 +10,19 @@ namespace TicTacCows.TicTacToeEngine
     {
         public int spaceX = 0;
         public int spaceY = 0;
+        public GameObject cowObj;
 
         public GameObject RUNTIME_PieceOnSpace;
         public GameValues.SpaceStates RUNTIME_CurrentSpaceState { get; private set; } = GameValues.SpaceStates.Empty;
         public GameValues.TicTacPlayers RUNTIME_SpaceOwner { get; private set; } = GameValues.TicTacPlayers.NONE;
+
+        void Start()
+        {
+            // NOTE: Typically I avoid the use of Start because of race conditions, but in this case we are just
+            //       clearing this space which has no dependencies, so it's safe and gets us the visual state we want
+            //       at the game start.
+            cowObj.transform.localEulerAngles = new Vector3(0f, Random.Range(0f, 359f), 0f);
+        }
 
         void Update()
         {
