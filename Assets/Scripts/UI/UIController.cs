@@ -66,6 +66,7 @@ namespace TicTacCows.UI
             }
 
             inObj.SetActive(false);
+            canvasGroup.alpha = 1f;
         }
     }
 }

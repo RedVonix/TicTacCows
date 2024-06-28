@@ -78,7 +78,7 @@ namespace TicTacCows.TicTacToeEngine
 
             LoggingSystem.AddLog(GameValues.LoggingTypes.Log, $"--- TicTacToeController:PlacePieceOnSpace - {RUNTIME_CurrentPlayer} placed piece on space {inSpace.spaceX}/{inSpace.spaceY}");
             GameObject spawnedPiece = SpawnSystem.singleton.SpawnFromPrefab(piecePrefab, inSpace.transform);
-            inSpace.PiecePlacedOnSpace(RUNTIME_CurrentPlayer, spawnedPiece);
+            inSpace.PiecePlacedOnSpace(RUNTIME_CurrentPlayer, spawnedPiece.GetComponent<TicTacToePiece>());
 
             ResolvePiecePlacement(inSpace);
         }
@@ -108,11 +108,11 @@ namespace TicTacCows.TicTacToeEngine
                 break;
 
                 case GameValues.RuleResolverResults.PlayerWins:
-                    ResolveGameEnd(GameValues.RuleResolverResults.PlayerWins, targetPlayer);
+                    MainGameController.singleton.ShowGameEnd_PlayerWon(targetPlayer);
                 break;
 
                 case GameValues.RuleResolverResults.Tie:
-                    ResolveGameEnd(GameValues.RuleResolverResults.Tie);
+                    MainGameController.singleton.ShowGameEnd_Draw();
                 break;
             }
         }
@@ -126,11 +126,6 @@ namespace TicTacCows.TicTacToeEngine
         private void BeginNewGameRound()
         {
             SwapActivePlayer();
-        }
-
-        private void ResolveGameEnd(GameValues.RuleResolverResults winResult, GameValues.TicTacPlayers winningPlayer = GameValues.TicTacPlayers.NONE)
-        {
-            StartNewGame();
         }
     }
 }

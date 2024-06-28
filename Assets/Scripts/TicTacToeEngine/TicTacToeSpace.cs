@@ -10,9 +10,10 @@ namespace TicTacCows.TicTacToeEngine
     {
         public int spaceX = 0;
         public int spaceY = 0;
+        public bool isWinningSpace = false;
         public GameObject cowObj;
 
-        public GameObject RUNTIME_PieceOnSpace;
+        public TicTacToePiece RUNTIME_PieceOnSpace;
         public GameValues.SpaceStates RUNTIME_CurrentSpaceState { get; private set; } = GameValues.SpaceStates.Empty;
         public GameValues.TicTacPlayers RUNTIME_SpaceOwner { get; private set; } = GameValues.TicTacPlayers.NONE;
 
@@ -38,7 +39,7 @@ namespace TicTacCows.TicTacToeEngine
 #endif
         }
 
-        public void PiecePlacedOnSpace(GameValues.TicTacPlayers inPlayer, GameObject pieceOnSpace)
+        public void PiecePlacedOnSpace(GameValues.TicTacPlayers inPlayer, TicTacToePiece pieceOnSpace)
         {
             RUNTIME_CurrentSpaceState = GameValues.SpaceStates.Populated;
             RUNTIME_SpaceOwner = inPlayer;
@@ -49,10 +50,12 @@ namespace TicTacCows.TicTacToeEngine
         {
             RUNTIME_CurrentSpaceState = GameValues.SpaceStates.Empty;
             RUNTIME_SpaceOwner = GameValues.TicTacPlayers.NONE;
+            isWinningSpace = false;
+            cowObj.SetActive(true);
 
             if (RUNTIME_PieceOnSpace != null)
             {
-                SpawnSystem.singleton.ReturnObjectToPool(RUNTIME_PieceOnSpace);
+                SpawnSystem.singleton.ReturnObjectToPool(RUNTIME_PieceOnSpace.gameObject);
                 RUNTIME_PieceOnSpace = null;
             }
         }

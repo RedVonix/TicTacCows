@@ -77,10 +77,16 @@ public class TicTacLogicResolver
             GameValues.TicTacPlayers checkPlayer = checkSpace.RUNTIME_SpaceOwner;
             if(checkPlayer != GameValues.TicTacPlayers.NONE)
             {
-                if(inBoard.GetRuntimeSpace(thisWinCon.x2, thisWinCon.y2).RUNTIME_SpaceOwner == checkPlayer &&
-                   inBoard.GetRuntimeSpace(thisWinCon.x3, thisWinCon.y3).RUNTIME_SpaceOwner == checkPlayer)
+                TicTacToeSpace spaceB = inBoard.GetRuntimeSpace(thisWinCon.x2, thisWinCon.y2);
+                TicTacToeSpace spaceC = inBoard.GetRuntimeSpace(thisWinCon.x3, thisWinCon.y3);
+                if (spaceB.RUNTIME_SpaceOwner == checkPlayer &&
+                    spaceC.RUNTIME_SpaceOwner == checkPlayer)
                 {
-                    // We've got a winner!
+                    // We've got a winner! Let these spaces know they're the winning spaces then tell the game logic.
+                    checkSpace.isWinningSpace = true;
+                    spaceB.isWinningSpace = true;
+                    spaceC.isWinningSpace = true;
+
                     return (GameValues.RuleResolverResults.PlayerWins, checkPlayer);
                 }
             }

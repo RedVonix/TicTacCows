@@ -9,7 +9,9 @@ namespace TicTacCows
         {
             NONE = 0,
             TitleScreen = 1,
-            ResultsScreen = 2,
+            PlayerOneWins = 2,
+            PlayerTwoWins = 3,
+            Draw = 4,
         }
 
         public enum TicTacToePieceTypes

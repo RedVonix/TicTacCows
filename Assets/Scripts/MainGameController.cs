@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TicTacCows.Logging;
 using TicTacCows.TicTacToeEngine;
@@ -58,6 +59,18 @@ namespace TicTacCows
             StartGameWithPlayerCount(2);
         }
 
+        public void GameOverButton_NewGame()
+        {
+            uiControl.CloseDialog(GameValues.DialogTypes.PlayerOneWins);
+            uiControl.CloseDialog(GameValues.DialogTypes.PlayerTwoWins);
+            uiControl.CloseDialog(GameValues.DialogTypes.Draw);
+
+            ticTacControl.gameBoard.boardSpaces.ForEach(s => s.ClearSpace());
+
+            uiControl.OpenDialog(GameValues.DialogTypes.TitleScreen);
+            ChangeGameState(GameValues.GameStates.TitleScreen);
+        }
+
         private void StartGameWithPlayerCount(int inPlayerCount)
         {
             if(currentGameState != GameValues.GameStates.TitleScreen)
@@ -71,7 +84,7 @@ namespace TicTacCows
             if (introPlayed)
             {
                 // Jump straight to the gameplay
-                ticTacControl.StartNewGame();
+                FirstTurnStart();
             }
             else
             {
@@ -140,6 +153,32 @@ namespace TicTacCows
             }
 
             ticTacControl.BeginNextMove();
+        }
+
+        public async void ShowGameEnd_PlayerWon(GameValues.TicTacPlayers winPlayer)
+        {
+            List<TicTacToeSpace> spaceList = ticTacControl.gameBoard.boardSpaces.FindAll(s => s.RUNTIME_SpaceOwner == winPlayer && s.isWinningSpace);
+            spaceList.ForEach(s =>
+            {
+                s.cowObj.SetActive(false);
+                s.RUNTIME_PieceOnSpace.PlayBeam();
+            });
+
+            await Task.Delay(2000);
+
+            if(winPlayer == GameValues.TicTacPlayers.Player0)
+            {
+                uiControl.OpenDialog(GameValues.DialogTypes.PlayerOneWins);
+            }
+            else if (winPlayer == GameValues.TicTacPlayers.Player1)
+            {
+                uiControl.OpenDialog(GameValues.DialogTypes.PlayerTwoWins);
+            }
+        }
+
+        public void ShowGameEnd_Draw()
+        {
+            uiControl.OpenDialog(GameValues.DialogTypes.Draw);
         }
         #endregion
     }
